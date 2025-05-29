@@ -1,145 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Esports Scoreboard Overlay</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Orbitron', sans-serif;
-      background: #0a0a0a;
-      color: #fff;
-      display: flex;
-      height: 100vh;
-    }
-
-    #dashboard {
-      width: 280px;
-      background: #111;
-      padding: 15px;
-      box-sizing: border-box;
-      color: white;
-      font-family: Arial, sans-serif;
-      overflow-y: auto;
-    }
-
-    #dashboard label {
-      display: block;
-      margin: 10px 0 5px;
-      font-weight: bold;
-      font-size: 0.9em;
-    }
-
-    #dashboard input[type="color"],
-    #dashboard input[type="number"],
-    #dashboard select,
-    #dashboard input[type="file"] {
-      width: 100%;
-      padding: 6px;
-      margin-bottom: 10px;
-      border-radius: 4px;
-      border: none;
-      box-sizing: border-box;
-    }
-
-    #scoreboard-container {
-      flex-grow: 1;
-      position: relative;
-      overflow: auto;
-      background-size: cover;
-      background-position: center;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
-    #scoreboard {
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      border-collapse: collapse;
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 10px;
-    }
-
-    #scoreboard th, #scoreboard td {
-      padding: 12px 15px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      text-align: left;
-      vertical-align: middle;
-      font-size: 16px;
-    }
-
-    #scoreboard th {
-      background: #222;
-      font-weight: 700;
-      font-family: 'Orbitron', sans-serif;
-    }
-
-    #scoreboard tr {
-      animation: fadeIn 0.5s ease-in-out;
-      transition: background-color 0.3s ease;
-    }
-
-    #scoreboard tr:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .logo img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: contain;
-    }
-
-    .alive-icons img {
-      width: 20px;
-      height: 20px;
-      margin-right: 4px;
-      vertical-align: middle;
-    }
-
-    .kills {
-      font-weight: bold;
-      color: #ff5050;
-      text-shadow: 0 0 5px #ff5050;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Eliminated teams styling */
-    tr.eliminated {
-      opacity: 0.5;
-      background-color: #111 !important;
-    }
-
-    tr.eliminated .team-name {
-      text-decoration: line-through;
-      color: #888 !important;
-    }
-
-    tr.eliminated .kills {
-      color: #666 !important;
-    }
-
-    tr.eliminated .alive-icons img {
-      filter: grayscale(100%) brightness(70%) !important;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Customizable Scoreboard Overlay</title>
+<style>
+  body {
+    margin: 0; 
+    font-family: Arial, sans-serif; 
+    display: flex; 
+    height: 100vh; 
+    background: #111;
+    color: white;
+  }
+  #dashboard {
+    width: 320px; 
+    background: #222; 
+    padding: 15px; 
+    overflow-y: auto;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+  #dashboard label {
+    display: block; 
+    margin-top: 15px; 
+    margin-bottom: 5px; 
+    font-weight: bold;
+  }
+  #dashboard input[type="file"],
+  #dashboard select,
+  #dashboard input[type="number"],
+  #dashboard input[type="color"],
+  #dashboard input[type="range"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px;
+    border-radius: 4px;
+    border: none;
+    background: #333;
+    color: white;
+  }
+  #dashboard input[type="range"] {
+    padding: 0;
+  }
+  #dashboard .row-color-control {
+    margin-bottom: 10px;
+    border: 1px solid #444;
+    padding: 8px;
+    border-radius: 6px;
+  }
+  #dashboard .row-color-control label {
+    font-weight: normal;
+  }
+  #overlay-container {
+    flex-grow: 1;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: auto;
+    background-size: cover;
+    background-position: center;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(0,0,0,0.7);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  thead tr {
+    background: #333;
+  }
+  th, td {
+    padding: 12px;
+    text-align: left;
+    vertical-align: middle;
+    transition: all 0.3s ease;
+  }
+  .logo img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: contain;
+  }
+  .alive-icons img {
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+  .kills {
+    font-weight: bold;
+    text-shadow: 0 0 5px #ff5050;
+  }
+</style>
 </head>
 <body>
 
 <div id="dashboard">
   <h2>Dashboard</h2>
 
-  <label for="backgroundUpload">Upload Background (PNG/JPG):</label>
+  <label for="backgroundUpload">Upload Background Image:</label>
   <input type="file" id="backgroundUpload" accept="image/png, image/jpeg" />
 
-  <label for="fontSelect">Font Family:</label>
+  <label for="aliveIconUpload">Upload Alive Icon:</label>
+  <input type="file" id="aliveIconUpload" accept="image/png, image/jpeg" />
+
+  <label for="deadIconUpload">Upload Dead Icon:</label>
+  <input type="file" id="deadIconUpload" accept="image/png, image/jpeg" />
+
+  <label for="fontSelect">Select Font:</label>
   <select id="fontSelect">
     <option value="'Orbitron', sans-serif" selected>Orbitron</option>
     <option value="'Roboto', sans-serif">Roboto</option>
@@ -151,23 +120,22 @@
   <label for="fontSizeInput">Text Size (px):</label>
   <input type="number" id="fontSizeInput" value="16" min="8" max="72" />
 
-  <label for="colorTeamInput">Team Name Color:</label>
-  <input type="color" id="colorTeamInput" value="#ffffff" />
-
-  <label for="colorKillsInput">Kills Color:</label>
-  <input type="color" id="colorKillsInput" value="#ff5050" />
-
-  <label for="colorAliveInput">Alive Icons Color:</label>
-  <input type="color" id="colorAliveInput" value="#4caf50" />
-
-  <label for="scoreboardWidthInput">Scoreboard Width (px or auto):</label>
+  <label for="scoreboardWidthInput">Table Width (px or %):</label>
   <input type="text" id="scoreboardWidthInput" value="100%" />
 
-  <label for="scoreboardHeightInput">Scoreboard Height (px or auto):</label>
-  <input type="text" id="scoreboardHeightInput" value="auto" />
+  <label for="scoreboardHeightInput">Row Height (px):</label>
+  <input type="number" id="scoreboardRowHeightInput" value="50" min="20" max="200" />
+
+  <label for="columnWidthsInput">Column Widths (px, comma separated):</label>
+  <input type="text" id="columnWidthsInput" value="60,150,150,60" placeholder="Logo, Team, Alive, Kills" />
+
+  <label>Row Colors and Opacity:</label>
+  <div id="rowColorsContainer"></div>
+
+  <button id="applySettingsBtn" style="margin-top: 15px; padding: 10px; background: #4caf50; border:none; border-radius: 6px; color:white; font-weight: bold; cursor:pointer;">Apply Settings</button>
 </div>
 
-<div id="scoreboard-container">
+<div id="overlay-container">
   <table id="scoreboard">
     <thead>
       <tr>
@@ -182,157 +150,71 @@
 </div>
 
 <script>
-  // Google Sheet CSV URL with rows E38-E49 (12 rows)
   const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSi8hg0w9o8dNFGzyNRNtuyS2L8JYeF5vNJerQzNGk0LPSXv1sUHkk5m6INRDVToXB5k7XlTphG3YuL/pub?gid=0&single=true&output=csv";
 
-  const aliveIcon = "https://cdn-icons-png.flaticon.com/512/190/190411.png";
-  const deadIcon = "https://cdn-icons-png.flaticon.com/512/1828/1828843.png";
+  let aliveIcon = "https://cdn-icons-png.flaticon.com/512/190/190411.png";
+  let deadIcon = "https://cdn-icons-png.flaticon.com/512/1828/1828843.png";
 
-  // DOM elements
   const scoreboardBody = document.getElementById('scoreboardBody');
   const backgroundUpload = document.getElementById('backgroundUpload');
+  const aliveIconUpload = document.getElementById('aliveIconUpload');
+  const deadIconUpload = document.getElementById('deadIconUpload');
   const fontSelect = document.getElementById('fontSelect');
   const fontSizeInput = document.getElementById('fontSizeInput');
-  const colorTeamInput = document.getElementById('colorTeamInput');
-  const colorKillsInput = document.getElementById('colorKillsInput');
-  const colorAliveInput = document.getElementById('colorAliveInput');
-  const scoreboardContainer = document.getElementById('scoreboard-container');
-  const scoreboard = document.getElementById('scoreboard');
   const scoreboardWidthInput = document.getElementById('scoreboardWidthInput');
-  const scoreboardHeightInput = document.getElementById('scoreboardHeightInput');
+  const scoreboardRowHeightInput = document.getElementById('scoreboardRowHeightInput');
+  const columnWidthsInput = document.getElementById('columnWidthsInput');
+  const rowColorsContainer = document.getElementById('rowColorsContainer');
+  const applySettingsBtn = document.getElementById('applySettingsBtn');
+  const overlayContainer = document.getElementById('overlay-container');
+  const scoreboard = document.getElementById('scoreboard');
 
   let allTeams = [];
 
-  // Convert hex color to CSS filter for alive icons coloring
-  // Source: https://codepen.io/sosuke/pen/Pjoqqp (approximate)
-  function colorToFilter(color) {
-    // We'll use a simple approach: for greenish alive color, just set hue-rotate and brightness
-    // For complex colors, a library would be needed, but this is simple enough:
-    if(color.toLowerCase() === "#4caf50") {
-      return "hue-rotate(90deg) brightness(1.2)";
+  // Utility: Convert hex + opacity to rgba
+  function hexToRGBA(hex, opacity) {
+    hex = hex.replace('#','');
+    if(hex.length === 3) {
+      hex = hex.split('').map(x => x+x).join('');
     }
-    return "brightness(1)";
+    const r = parseInt(hex.substring(0,2),16);
+    const g = parseInt(hex.substring(2,4),16);
+    const b = parseInt(hex.substring(4,6),16);
+    return `rgba(${r},${g},${b},${opacity})`;
   }
 
-  // Fetch and parse CSV from Google Sheets
+  // Load custom icons from file inputs
+  function loadImageFromFile(input, callback) {
+    if(input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => callback(e.target.result);
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  backgroundUpload.addEventListener('change', () => {
+    loadImageFromFile(backgroundUpload, dataUrl => {
+      overlayContainer.style.backgroundImage = `url(${dataUrl})`;
+    });
+  });
+
+  aliveIconUpload.addEventListener('change', () => {
+    loadImageFromFile(aliveIconUpload, dataUrl => {
+      aliveIcon = dataUrl;
+      renderTable();
+    });
+  });
+
+  deadIconUpload.addEventListener('change', () => {
+    loadImageFromFile(deadIconUpload, dataUrl => {
+      deadIcon = dataUrl;
+      renderTable();
+    });
+  });
+
+  // Fetch and parse data from Google Sheets CSV
   async function fetchData() {
     try {
       const res = await fetch(sheetUrl);
       const text = await res.text();
-      const rows = text.trim().split("\n").slice(37, 49); // E38-E49 (12 rows)
-
-      allTeams = rows.map(row => {
-        const cols = row.split(",");
-        return {
-          logo: cols[2] || "",
-          name: cols[4] || "",
-          kills: parseInt(cols[6]) || 0,
-          alive: parseInt(cols[25]) || 0
-        };
-      });
-      renderTable();
-    } catch (e) {
-      console.error("Failed to fetch or parse data", e);
-    }
-  }
-
-  function renderTable() {
-    scoreboardBody.innerHTML = "";
-
-    allTeams.forEach(team => {
-      const tr = document.createElement('tr');
-
-      if(team.alive === 0) {
-        tr.classList.add('eliminated');
-      }
-
-      // Logo cell
-      const logoTd = document.createElement('td');
-      logoTd.className = 'logo';
-      const imgLogo = document.createElement('img');
-      imgLogo.src = team.logo || "";
-      imgLogo.alt = team.name + " logo";
-      logoTd.appendChild(imgLogo);
-      tr.appendChild(logoTd);
-
-      // Team Name
-      const nameTd = document.createElement('td');
-      nameTd.className = 'team-name';
-      nameTd.textContent = team.name;
-      nameTd.style.color = colorTeamInput.value;
-      nameTd.style.fontFamily = fontSelect.value;
-      nameTd.style.fontSize = fontSizeInput.value + "px";
-      tr.appendChild(nameTd);
-
-      // Alive icons
-      const aliveTd = document.createElement('td');
-      aliveTd.className = 'alive-icons';
-      for(let i=0; i<4; i++){
-        const icon = document.createElement('img');
-        icon.src = i < team.alive ? aliveIcon : deadIcon;
-        icon.alt = i < team.alive ? "Alive" : "Dead";
-        if(i < team.alive) {
-          icon.style.filter = colorToFilter(colorAliveInput.value);
-        } else {
-          icon.style.filter = "grayscale(100%) brightness(70%)";
-        }
-        aliveTd.appendChild(icon);
-      }
-      tr.appendChild(aliveTd);
-
-      // Kills
-      const killsTd = document.createElement('td');
-      killsTd.className = 'kills';
-      killsTd.textContent = team.kills;
-      killsTd.style.color = colorKillsInput.value;
-      killsTd.style.fontFamily = fontSelect.value;
-      killsTd.style.fontSize = fontSizeInput.value + "px";
-      tr.appendChild(killsTd);
-
-      scoreboardBody.appendChild(tr);
-    });
-  }
-
-  // Upload background image and set as scoreboard container background
-  backgroundUpload.addEventListener('change', e => {
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(evt){
-      scoreboardContainer.style.backgroundImage = `url(${evt.target.result})`;
-      scoreboardContainer.style.backgroundSize = "cover";
-      scoreboardContainer.style.backgroundPosition = "center";
-    };
-    reader.readAsDataURL(file);
-  });
-
-  // Font family change
-  fontSelect.addEventListener('change', renderTable);
-  // Font size change
-  fontSizeInput.addEventListener('input', renderTable);
-  // Team name color change
-  colorTeamInput.addEventListener('input', renderTable);
-  // Kills color change
-  colorKillsInput.addEventListener('input', renderTable);
-  // Alive icon color change
-  colorAliveInput.addEventListener('input', renderTable);
-
-  // Scoreboard size controls
-  scoreboardWidthInput.addEventListener('input', () => {
-    const val = scoreboardWidthInput.value;
-    scoreboard.style.width = val.includes('%') || val === 'auto' ? val : val + 'px';
-  });
-
-  scoreboardHeightInput.addEventListener('input', () => {
-    const val = scoreboardHeightInput.value;
-    scoreboard.style.height = val.includes('%') || val === 'auto' ? val : val + 'px';
-  });
-
-  // Initial setup
-  fetchData();
-  // Refresh every 20 seconds
-  setInterval(fetchData, 20000);
-
-</script>
-</body>
-</html>
+      // Get rows E38-E49, that is lines 38
